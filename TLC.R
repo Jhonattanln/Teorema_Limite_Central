@@ -54,11 +54,15 @@ for(i in 3:nrow(testes)) {
 ### Plotando distribuiÁ„o 
 
 janela %>%
-  ggplot(aes(x = fFisher))+ # distribui√ß√£o uniforme
-  geom_histogram(aes(y = ..density..),bins = 50, fill = 'black', alpha = 0.8)+
+  ggplot(aes(x = fFisher))+ # distribui√ß√£o Fisher
+  geom_histogram(aes(y = ..density..),bins = 70, fill = 'black', alpha = 0.8)+
   geom_density(size = 1.5, alpha = 0.9, color = 'red')+
   theme_hc()+
   scale_colour_hc()
+
+ecdf_fisher <- ecdf(janela$fFisher)
+
+plot(ecdf_fisher)
 
 ### Gr·fico do p_value
 
