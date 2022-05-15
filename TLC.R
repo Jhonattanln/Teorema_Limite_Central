@@ -70,7 +70,7 @@ testes %>%
                names_to = "distro",
                values_to = "p") %>%
   ggplot(aes(x = indice, color = distro, y = p))+
-  geom_line(size=1.5, alpha = 0.8)+
+  geom_line(size=1.2, alpha = 0.8)+
   theme_hc()+
   scale_colour_hc()+
   scale_y_continuous(label = scales::percent)
