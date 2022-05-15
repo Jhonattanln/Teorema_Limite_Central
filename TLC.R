@@ -26,20 +26,6 @@ for(i in 1:n) {
   sim$fFisher[i] <- rf(n = m, df1 = 2, df2 = 4) %>% mean()
 }
 
-### Plotando a distribuição dos dados
-sim %>%
-  ggplot(aes(x = exponencial))+ # distribuição exponencial
-  geom_histogram(aes(y = ..density..), bins = 50, fill = 'black', alpha = 0.8)+
-  geom_density(size = 1.5, alpha = 0.9, color = 'red')+
-  theme_hc()+
-  scale_colour_hc()
-
-sim %>%
-  ggplot(aes(x = fFisher))+ # distribuição uniforme
-  geom_histogram(aes(y = ..density..),bins = 50, fill = 'black', alpha = 0.8)+
-  geom_density(size = 1.5, alpha = 0.9, color = 'red')+
-  theme_hc()+
-  scale_colour_hc()
 
 ### Aplicando testes para amostra
 
@@ -57,6 +43,7 @@ for(i in 3:nrow(testes)) {
     transmute(uniforme = (uniforme - mean(uniforme)/sd(uniforme)),
               tStudent = (tStudent - mean(tStudent))/sd(tStudent),
               fFisher = (fFisher - mean(fFisher))/sd(fFisher))
+  ### Rodando teste de Kolmogorov-Smirnov
   
   testes$Puni[i] <- ks.test(x = janela$uniforme, 'pnorm')$p.value
   testes$PtStu[i] <- ks.test(x = janela$tStudent, 'pnorm')$p.value
@@ -64,6 +51,16 @@ for(i in 3:nrow(testes)) {
   
 }
 
+### Plotando distribui��o 
+
+janela %>%
+  ggplot(aes(x = fFisher))+ # distribuição uniforme
+  geom_histogram(aes(y = ..density..),bins = 50, fill = 'black', alpha = 0.8)+
+  geom_density(size = 1.5, alpha = 0.9, color = 'red')+
+  theme_hc()+
+  scale_colour_hc()
+
+### Gr�fico do p_value
 
 testes %>%
   pivot_longer(Puni:PfFis,
