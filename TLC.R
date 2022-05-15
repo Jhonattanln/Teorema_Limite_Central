@@ -46,32 +46,32 @@ sim %>%
 #### Primeiramente Ã© necessÃ¡rio normalizar os dados
 
 testes <- tibble(indice = 3:n,
-                Pexpo = double(length= n-2),
                 Puni = double(length = n-2),
                 PtStu = double(length = n-2),
                 PfFis = double(length = n-2))
 
-for(i in 3:nrow(teste)) {
+for(i in 3:nrow(testes)) {
+  
   janela <- sim %>% 
     filter(indice <= i) %>% # selecionamos apenas os índices até o atual
-    transmute(uniforme = (uniforme - mean(uniforme))/sd(uniforme),
+    transmute(uniforme = (uniforme - mean(uniforme)/sd(uniforme)),
               tStudent = (tStudent - mean(tStudent))/sd(tStudent),
-              fFisher = (fFisher - mean(fFisher))/sd(fFisher),
-              exponencial = (exponencial - mean(exponencial))/sd(exponencial))
+              fFisher = (fFisher - mean(fFisher))/sd(fFisher))
   
+  testes$Puni[i] <- ks.test(x = janela$uniforme, 'pnorm')$p.value
+  testes$PtStu[i] <- ks.test(x = janela$tStudent, 'pnorm')$p.value
+  testes$PfFis[i] <- ks.test(x = janela$fFisher, 'pnorm')$p.value
   
-  testes$Puni[i] <- ks.test(x = janela$uniforme, "pnorm")$p.value
-  testes$PtStu[i] <- ks.test(x = janela$tStudent, "pnorm")$p.value
-  testes$PfFis[i] <- ks.test(x = janela$fFisher, "pnorm")$p.value
-  testes$Pexpo[i] <- ks.test(x = janela$exponencial, "pnorm")$p.value
 }
 
 
 testes %>%
-  pivot_longer(Pexpo:PfFis,
+  pivot_longer(Puni:PfFis,
                names_to = "distro",
                values_to = "p") %>%
   ggplot(aes(x = indice, color = distro, y = p))+
   geom_line(size=1.5, alpha = 0.8)+
-  theme_minimal() +
+  theme_hc()+
+  scale_colour_hc()+
   scale_y_continuous(label = scales::percent)
+
