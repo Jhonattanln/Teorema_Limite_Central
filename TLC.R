@@ -50,3 +50,21 @@ teste <- tibble(indice = 3:n,
                 Puni = double(length = n-2),
                 PtStu = double(length = n-2),
                 PfFis = double(length = n-2))
+
+for(i in 3:row(testes)) {
+  
+  janela <- sim %>%
+    filter(indice <= i) %>%
+    transmute(exponencial = (exponencial - mean(exponencial)/sd(exponencial)),
+              uniforme = (uniforme - mean(uniforme)/sd(uniforme)),
+              tStudent = (tStudent - mean(tStudent)/sd(uniforme)),
+              fFisher = (fFisher - mean(fFisher))/sd(uniforme))
+
+  teste$Pexpo[i] <- shapiro.test(janela$exponencial)$p.value
+  teste$Puni[i] <- shapiro.test(janela$uniforme)$p.value
+  teste$PtStu[i] <- shapiro.test(janela$tStudent)$p.value
+  teste$PfFis[i] <- shapiro.test(janela$fFisher)$p.value
+}
+
+print(test$Pexpo)
+
